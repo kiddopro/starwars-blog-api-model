@@ -2,6 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
+import json
 from flask import Flask, request, jsonify, url_for
 from flask_migrate import Migrate
 from flask_swagger import swagger
@@ -20,6 +21,39 @@ db.init_app(app)
 CORS(app)
 setup_admin(app)
 
+#variables
+users = [
+    
+        {
+            "id": 1,
+            "first_name": "Bob",
+            "last_name": "Dylan",
+            "email": "bob@dylan.com",
+            "password": "asdasdasd"
+        }
+    
+]
+
+planets = {
+    "planet": [
+        {
+            "id": 1,
+            "name": "Earth",
+            "picture_url": None
+        }
+    ]
+}
+
+people = {
+    "people": [
+        {
+            "id": 1,
+            "name" : "Yoda",
+            "picture_url" : None
+        }
+    ]
+}
+
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
@@ -30,13 +64,20 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
+# mis endpoints
 @app.route('/user', methods=['GET'])
-def handle_hello():
+def get_users():
+    response = jsonify(users), 200
+    return response
 
+@app.route('/user', methods=['POST'])
+def create_user():
+    request_body = request.data
+    decoded_request = json.loads(request_body)
+    users.append(decoded_request)
     response_body = {
-        "msg": "Hello, this is your GET /user response "
+        "msg": "OK"
     }
-
     return jsonify(response_body), 200
 
 # this only runs if `$ python src/main.py` is executed
