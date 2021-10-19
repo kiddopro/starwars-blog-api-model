@@ -9,7 +9,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Planets, People
 #from models import Person
 
 app = Flask(__name__)
@@ -34,14 +34,14 @@ users = [
     
 ]
 
-planets = [
+# planets = [
 
-    {
-        "id": 1,
-        "name": "Earth",
-        "picture_url": None
-    }
-]
+#     {
+#         "id": 1,
+#         "name": "Earth",
+#         "picture_url": None
+#     }
+# ]
 
 people = [
     {
@@ -64,7 +64,9 @@ def sitemap():
 # mis endpoints
 @app.route('/user', methods=['GET'])
 def get_users():
-    return jsonify(users), 200
+    all_user = User.query.all()
+    all_users = list(map(lambda x: x.serialize(), all_user))
+    return jsonify(all_users), 200
 
 @app.route('/user', methods=['POST'])
 def create_user():
@@ -78,7 +80,9 @@ def create_user():
 
 @app.route('/planets', methods=['GET'])
 def get_planets():
-    return jsonify(planets), 200
+    all_planet = Planets.query.all()
+    all_planets = list(map(lambda x: x.serialize(), all_planet))
+    return jsonify(all_planets), 200
 
 @app.route('/planets', methods=['POST'])
 def post_planets():
@@ -92,7 +96,9 @@ def post_planets():
 
 @app.route('/people', methods=['GET'])
 def get_people():
-    return jsonify(people), 200
+    all_people = People.query.all()
+    all_peoples = list(map(lambda x: x.serialize(), all_people))
+    return jsonify(all_peoples), 200
 
 @app.route('/people', methods=['POST'])
 def post_people():

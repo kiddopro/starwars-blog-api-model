@@ -14,13 +14,13 @@ class User(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.email,
+            "email": self.email
             # do not serialize the password, its a security breach
         }
 
 class Planets(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(150))
+    name = db.Column(db.String(150), unique=True)
     picture_url = db.Column(db.String(250))
 
     def serialize(self):
@@ -32,7 +32,7 @@ class Planets(db.Model):
 
 class People(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(150))
+    name = db.Column(db.String(150), unique=True)
     picture_url = db.Column(db.String(250))
 
     def serialize(self):
