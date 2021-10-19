@@ -34,25 +34,22 @@ users = [
     
 ]
 
-planets = {
-    "planet": [
-        {
-            "id": 1,
-            "name": "Earth",
-            "picture_url": None
-        }
-    ]
-}
+planets = [
 
-people = {
-    "people": [
-        {
-            "id": 1,
-            "name" : "Yoda",
-            "picture_url" : None
-        }
-    ]
-}
+    {
+        "id": 1,
+        "name": "Earth",
+        "picture_url": None
+    }
+]
+
+people = [
+    {
+        "id": 1,
+        "name" : "Yoda",
+        "picture_url" : None
+    }
+]
 
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
@@ -67,8 +64,7 @@ def sitemap():
 # mis endpoints
 @app.route('/user', methods=['GET'])
 def get_users():
-    response = jsonify(users), 200
-    return response
+    return jsonify(users), 200
 
 @app.route('/user', methods=['POST'])
 def create_user():
@@ -76,7 +72,35 @@ def create_user():
     decoded_request = json.loads(request_body)
     users.append(decoded_request)
     response_body = {
-        "msg": "OK"
+        "msg": "User added successfully"
+    }
+    return jsonify(response_body), 200
+
+@app.route('/planets', methods=['GET'])
+def get_planets():
+    return jsonify(planets), 200
+
+@app.route('/planets', methods=['POST'])
+def post_planets():
+    request_body = request.data
+    decoded_request = json.loads(request_body)
+    planets.append(decoded_request)
+    request_body = {
+        "msg": "Planet added successfully"
+    }
+    return  jsonify(request_body), 200
+
+@app.route('/people', methods=['GET'])
+def get_people():
+    return jsonify(people), 200
+
+@app.route('/people', methods=['POST'])
+def post_people():
+    request_body = request.data
+    decoded_request = json.loads(request_body)
+    people.append(decoded_request)
+    response_body = {
+        "msg": "People added successfully"
     }
     return jsonify(response_body), 200
 
