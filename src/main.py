@@ -70,13 +70,15 @@ def get_users():
 
 @app.route('/user', methods=['POST'])
 def create_user():
-    request_body = request.data
-    decoded_request = json.loads(request_body)
-    users.append(decoded_request)
-    response_body = {
-        "msg": "User added successfully"
-    }
-    return jsonify(response_body), 200
+    request_body = request.json # decoded_request = json.loads(request_body)
+    new_user = User.registrar(request_body['email'], request_body['password'])
+    db.session.add(new_user)
+    db.session.commit()
+    # users.append(decoded_request)
+    # response_body = {
+    #     "msg": "User added successfully"
+    # }
+    return jsonify(request_body), 200
 
 @app.route('/planets', methods=['GET'])
 def get_planets():
