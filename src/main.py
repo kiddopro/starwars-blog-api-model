@@ -52,7 +52,7 @@ def get_user_id(user_id):
     if user is None:
         raise APIException('People not found', status_code=404)
     else:
-        return jsonify(user), 200
+        return jsonify(user.serialize()), 200
 
 
 
