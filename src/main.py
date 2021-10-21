@@ -132,7 +132,7 @@ def post_planets():
     return  jsonify(all_planets), 200
 
 
-@app.route('/planets/<int:id_planet', methods=['DELETE'])
+@app.route('/planets/<int:id_planet>', methods=['DELETE'])
 def delete_planet(id_planet):
     planet = Planets.query.get(id_planet)
 
