@@ -174,10 +174,10 @@ def post_favorites_user_people():
 
     return jsonify(all_fav_peoples), 200
 
-@app.route('/user/people/<int:id_fav_people', methods=['DELETE'])
-def del_fav_people(id_fav_people):
+@app.route('/user/people/<int:id>', methods=['DELETE'])
+def del_fav_people(id):
     request_body = request.json # innecesario
-    fav = FavoritesPeople.query.get(id_fav_people)
+    fav = FavoritesPeople.query.get(id)
     if fav is None:
         raise APIException('Identifier for FavoritesPeople is not found', status_code=404)
     else:

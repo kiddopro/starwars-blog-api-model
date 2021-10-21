@@ -72,8 +72,8 @@ class People(db.Model):
 class FavoritesPeople(db.Model):
     # __tablename__ = 'favoritespeople'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    people_id = db.Column(db.Integer, db.ForeignKey('people.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=False)
+    people_id = db.Column(db.Integer, db.ForeignKey('people.id'), primary_key=False)
     # user = db.relationship(User)
     # people = db.relationship(People)
 
