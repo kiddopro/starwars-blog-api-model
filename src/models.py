@@ -67,7 +67,8 @@ class People(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "picture_url": self.picture_url
+            "picture_url": self.picture_url,
+            # "favorites_people": list(map(lambda x: x.serialize(), self.favorites_people))
         }
 
 

@@ -87,14 +87,17 @@ def delete_user(id_user):
     if user is None:
         raise APIException('User not found', status_code=404)
     else:
-        db.session.delete(user)
-        db.session.commit()
+        # si no tiene un favoritos relacionado puede borrarse
+        if user.favorites_planet == [] or user.favorites_people == []:
+            db.session.delete(user)
+            db.session.commit()
+            all_user = User.query.all()
+            all_users = list(map(lambda x: x.serialize(), all_user))
 
-    # retornamos todos los usuarios nuevamente para actualizar la lista
-    all_user = User.query.all()
-    all_users = list(map(lambda x: x.serialize(), all_user))
-
-    return jsonify(all_users), 200
+            return jsonify(all_users), 200
+        # de lo contrario manda un mensaje correspondiente
+        else:
+            raise APIException('User has a relationship with another table', status_code=404)
 
 
 
@@ -139,14 +142,17 @@ def delete_planet(id_planet):
     if planet is None:
         raise APIException('Planet not found', status_code=404)
     else:
-        db.session.delete(planet)
-        db.session.commit()
+        # si no tiene un favoritos relacionado puede borrarse
+        if planet.favorites_planets == []:
+            db.session.delete(planet)
+            db.session.commit()
+            all_planet = Planets.query.all()
+            all_planets = list(map(lambda x: x.serialize(), all_planet))
 
-
-    all_planet = Planets.query.all()
-    all_planets = list(map(lambda x: x.serialize(), all_planet))
-
-    return jsonify(all_planets), 200
+            return jsonify(all_planets), 200
+        # de lo contrario manda un mensaje correspondiente
+        else:
+            raise APIException('Planet has a relationship with another table', status_code=404)
 
 
 @app.route('/people', methods=['GET'])
@@ -183,22 +189,28 @@ def post_people():
 
     return jsonify(all_peoples), 200
 
-@app.route('/people/<int:id_people>', methods=['DELETE'])
-def delete_people(id_people):
+@app.route('/people/<int:id>', methods=['DELETE'])
+def delete_people(id):
 
-    people = People.query.get(id_people)
+    people = People.query.get(id)
 
     if people is None:
         raise APIException('People not found', status_code=404)
     else:
-        db.session.delete(people)
-        db.session.commit()
+        # si no tiene un favoritos relacionado puede borrarse
+        if people.favorites_people == []:
+            db.session.delete(people)
+            db.session.commit()
+            all_people = People.query.all()
+            all_peoples = list(map(lambda x: x.serialize(), all_people))
 
+            return jsonify(all_peoples), 200
+        # de lo contrario manda un mensaje correspondiente
+        else:
+            raise APIException('People has a relationship with another table', status_code=404)
+            
 
-    all_people = People.query.all()
-    all_peoples = list(map(lambda x: x.serialize(), all_people))
-
-    return jsonify(all_peoples), 200
+    
 
 # favorites people/personajes
 @app.route('/user/people', methods=['GET'])
