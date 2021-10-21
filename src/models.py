@@ -38,7 +38,7 @@ class User(db.Model):
 class Planets(db.Model):
     # __tablename__ = 'planets'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(150), unique=True)
+    name = db.Column(db.String(150), unique=True, nullable=False)
     picture_url = db.Column(db.String(250))
 
     def __repr__(self):
@@ -54,7 +54,7 @@ class Planets(db.Model):
 class People(db.Model):
     # __tablename__ = 'people'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(150), unique=True)
+    name = db.Column(db.String(150), unique=True, nullable=False)
     picture_url = db.Column(db.String(250))
     favorites_people = db.relationship('FavoritesPeople', backref="people")
 
@@ -72,8 +72,8 @@ class People(db.Model):
 class FavoritesPeople(db.Model):
     # __tablename__ = 'favoritespeople'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=False)
-    people_id = db.Column(db.Integer, db.ForeignKey('people.id'), primary_key=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    people_id = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=False)
     # user = db.relationship(User)
     # people = db.relationship(People)
 
