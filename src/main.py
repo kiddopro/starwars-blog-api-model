@@ -88,16 +88,17 @@ def delete_user(id_user):
         raise APIException('User not found', status_code=404)
     else:
         # si no tiene un favoritos relacionado puede borrarse
-        if user.favorites_planet == [] or user.favorites_people == []:
+        if user.favorites_planet != [] or user.favorites_people != []:
+            raise APIException('User has a relationship with another table', status_code=404)
+            
+        # de lo contrario manda un mensaje correspondiente
+        else:
             db.session.delete(user)
             db.session.commit()
             all_user = User.query.all()
             all_users = list(map(lambda x: x.serialize(), all_user))
 
             return jsonify(all_users), 200
-        # de lo contrario manda un mensaje correspondiente
-        else:
-            raise APIException('User has a relationship with another table', status_code=404)
 
 
 
