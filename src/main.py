@@ -9,7 +9,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, Planets, People, FavoritesPeople
+from models import db, User, Planets, People, FavoritesPeople, FavoritesPlanets
 #from models import Person
 
 app = Flask(__name__)
@@ -258,6 +258,58 @@ def del_fav_people(id):
     all_fav_peoples = list(map(lambda x: x.serialize(), all_fav_people))
 
     return jsonify(all_fav_peoples), 200
+
+
+# favorites planets
+@app.route('/user/planets', methods=['GET'])
+def get_favorites_user_planets():
+
+    all_fav = FavoritesPlanets.query.all()
+    all_favs = list(map(lambda x: x.serialize(), all_fav))
+
+    return jsonify(all_favs), 200
+
+
+@app.route('/user/planets', methods=['POST'])
+def post_favorites_user_planets():
+
+    # obtengo lo que me mandan por json y lo agrego a la base de datos
+    request_body = request.json
+    user = User.query.get(request_body['user_id'])
+    planet = Planets.query.get(request_body['planet_id'])
+    if user is None:
+        raise APIException('User not found', status_code=404)
+    elif planet is None:
+        raise APIException('Planet not found', status_code=404)
+    else:
+        favoritesPlanet = FavoritesPlanets(user_id=request_body['user_id'], planet_id=request_body['planet_id'])
+        db.session.add(favoritesPlanet)   
+        db.session.commit()
+        
+    # retorno una lista en json con los datos actualizados
+
+    all_fav_planet = FavoritesPlanets.query.all()
+    all_fav_planets = list(map(lambda x: x.serialize(), all_fav_planet))
+
+    return jsonify(all_fav_planets), 200
+
+@app.route('/user/planets/<int:id>', methods=['DELETE'])
+def del_fav_planets(id):
+    request_body = request.json # innecesario
+    fav = FavoritesPlanets.query.get(id)
+    if fav is None:
+        raise APIException('Identifier for FavoritesPlanets is not found', status_code=404)
+    else:
+        db.session.delete(fav)
+        db.session.commit()
+
+    # retornamos nuevamente la lista de favoritos actualizada
+    all_fav_planet = FavoritesPlanets.query.all()
+    all_fav_planets = list(map(lambda x: x.serialize(), all_fav_planet))
+
+    return jsonify(all_fav_planets), 200
+
+
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
