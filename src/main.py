@@ -96,11 +96,11 @@ def delete_user(id_user):
     if user is None:
         raise APIException('User not found', status_code=404)
     else:
-        # si no tiene un favoritos relacionado puede borrarse
+        # si tiene un favoritos vinculado no puede borrarse
         if user.favorites_planet != [] or user.favorites_people != []:
             raise APIException('User has a relationship with another table', status_code=404)
             
-        # de lo contrario manda un mensaje correspondiente
+        # si no tiene un favoritos relacionado puede borrarse
         else:
             db.session.delete(user)
             db.session.commit()
