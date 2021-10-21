@@ -41,7 +41,7 @@ def get_users():
     all_users = list(map(lambda x: x.serialize(), all_user))
     return jsonify(all_users), 200
 
-@app.route('/user/<int:user_id>')
+@app.route('/user/<int:user_id>', methods=['GET'])
 def get_user_id(user_id):
     # agarramos la respuesta del json y se la asignamos a body
     body = request.json
@@ -83,14 +83,14 @@ def get_planets():
     all_planets = list(map(lambda x: x.serialize(), all_planet))
     return jsonify(all_planets), 200
 
-@app.route('/planets/<int:planet_id>')
+@app.route('/planets/<int:planet_id>', methods=['GET'])
 def get_planet_id(planet_id):
     # agarramos la respuesta del json y se la asignamos a body
     body = request.json
-    # hacemos una busqueda a User por la id que se le pasa por parametro
+    # hacemos una busqueda a Planets por la id que se le pasa por parametro
     planet = Planets.query.get(planet_id)
 
-    # corroboramos que se obtuvo respuesta, de lo contrario no existe un usuario con esa id
+    # corroboramos que se obtuvo respuesta, de lo contrario no existe un planeta con esa id
     if planet is None:
         raise APIException('Planet not found', status_code=404)
     else:
@@ -115,6 +115,19 @@ def get_people():
     all_people = People.query.all()
     all_peoples = list(map(lambda x: x.serialize(), all_people))
     return jsonify(all_peoples), 200
+
+@app.route('/people/<int:people_id>', methods=['GET'])
+def get_people_id(people_id):
+    # agarramos la respuesta del json y se la asignamos a body
+    body = request.json
+    # hacemos una busqueda a People por la id que se le pasa por parametro
+    people = People.query.get(people_id)
+
+    # corroboramos que se obtuvo respuesta, de lo contrario no existe un personaje con esa id
+    if people is None:
+        raise APIException('People not found', status_code=404)
+    else:
+        return jsonify(people.serialize()), 200
 
 @app.route('/people', methods=['POST'])
 def post_people():
