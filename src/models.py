@@ -11,26 +11,27 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.email
 
-    def __init__(self, email, password):
-        self.email = email
-        self.password = password
-        self.is_active = True
+    # def __init__(self, email, password):
+    #     self.email = email
+    #     self.password = password
+    #     self.is_active = True
 
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.email
+            "email": self.email,
+            "is_active": self.is_active
             # do not serialize the password, its a security breach
         }
     
-    @classmethod
-    def registrar(cls, email, password):
-        new_user = cls(
-            email.lower(),
-            password
+    # @classmethod
+    # def registrar(cls, email, password):
+    #     new_user = cls(
+    #         email.lower(),
+    #         password
            
-        )
-        return new_user
+    #     )
+    #     return new_user
 
 class Planets(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

@@ -22,34 +22,7 @@ CORS(app)
 setup_admin(app)
 
 #variables
-users = [
-    
-        {
-            "id": 1,
-            "first_name": "Bob",
-            "last_name": "Dylan",
-            "email": "bob@dylan.com",
-            "password": "asdasdasd"
-        }
-    
-]
 
-# planets = [
-
-#     {
-#         "id": 1,
-#         "name": "Earth",
-#         "picture_url": None
-#     }
-# ]
-
-people = [
-    {
-        "id": 1,
-        "name" : "Yoda",
-        "picture_url" : None
-    }
-]
 
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
@@ -68,17 +41,41 @@ def get_users():
     all_users = list(map(lambda x: x.serialize(), all_user))
     return jsonify(all_users), 200
 
+@app.route('/user/<int:user_id>')
+def get_user_id(user_id):
+    # agarramos la respuesta del json y se la asignamos a body
+    body = request.json
+    # hacemos una busqueda a User por la id que se le pasa por parametro
+    user = User.query.get(user_id)
+
+    # corroboramos que se obtuvo respuesta, de lo contrario no existe un usuario con esa id
+    if user is None:
+        raise APIException('People not found', status_code=404)
+    else:
+        return jsonify(user), 200
+
+
+
 @app.route('/user', methods=['POST'])
 def create_user():
-    request_body = request.json # decoded_request = json.loads(request_body)
-    new_user = User.registrar(request_body['email'], request_body['password'])
-    db.session.add(new_user)
+    # request_body = request.json # decoded_request = json.loads(request_body)
+    # new_user = User.registrar(request_body['email'], request_body['password'])
+    # db.session.add(new_user)
+    # db.session.commit()
+
+    # obtengo lo que me mandan por json y lo agrego a la base de datos
+    request_body = request.json
+    is_active = request.json.get('is_active', False)
+    user = User(email=request_body['email'], password=request_body['password'], is_active=is_active)
+    db.session.add(user)   
     db.session.commit()
-    # users.append(decoded_request)
-    # response_body = {
-    #     "msg": "User added successfully"
-    # }
-    return jsonify(request_body), 200
+
+    # devuelvo la lista actualizada de usuarios
+
+    all_user = User.query.all()
+    all_users = list(map(lambda x: x.serialize(), all_user))
+
+    return jsonify(all_users), 200
 
 @app.route('/planets', methods=['GET'])
 def get_planets():
@@ -88,13 +85,17 @@ def get_planets():
 
 @app.route('/planets', methods=['POST'])
 def post_planets():
-    request_body = request.data
-    decoded_request = json.loads(request_body)
-    planets.append(decoded_request)
-    request_body = {
-        "msg": "Planet added successfully"
-    }
-    return  jsonify(request_body), 200
+    # obtengo lo que me mandan por json y lo agrego a la base de datos
+    request_body = request.json
+    planet = Planets(name=request_body['name'], picture_url=request_body['picture_url'])
+    db.session.add(planet)   
+    db.session.commit()
+
+    # retorno una lista en json con los datos actualizados
+
+    all_planet = Planets.query.all()
+    all_planets = list(map(lambda x: x.serialize(), all_planet))
+    return  jsonify(all_planets), 200
 
 @app.route('/people', methods=['GET'])
 def get_people():
