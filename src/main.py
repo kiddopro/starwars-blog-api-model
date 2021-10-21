@@ -77,6 +77,27 @@ def create_user():
 
     return jsonify(all_users), 200
 
+@app.route('/user/<int:id_user>', methods=['DELETE'])
+def delete_user(id_user):
+
+    # obtenemos el usuario
+    user = User.query.get(id_user)
+
+    # verificamos si se encontró un usuario con la id que viene por parametro
+    if user is None:
+        raise APIException('User not found', status_code=404)
+    else:
+        db.session.delete(user)
+        db.session.commit()
+
+    # retornamos todos los usuarios nuevamente para actualizar la lista
+    all_user = User.query.all()
+    all_users = list(map(lambda x: x.serialize(), all_user))
+
+    return jsonify(all_users), 200
+
+
+
 @app.route('/planets', methods=['GET'])
 def get_planets():
     all_planet = Planets.query.all()
