@@ -3,10 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class User(db.Model):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    # favoritespeople_id = db.Column(db.Integer, db.ForeignKey('favoritespeople.id'))
+    # favoritespeople = db.relationship('FavoritesPeople', backref='user')
 
     def __repr__(self):
         return '<User %r>' % self.email
@@ -34,6 +37,7 @@ class User(db.Model):
     #     return new_user
 
 class Planets(db.Model):
+    __tablename__ = 'planets'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(150), unique=True)
     picture_url = db.Column(db.String(250))
@@ -49,6 +53,7 @@ class Planets(db.Model):
         }
 
 class People(db.Model):
+    __tablename__ = 'people'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(150), unique=True)
     picture_url = db.Column(db.String(250))
@@ -65,6 +70,7 @@ class People(db.Model):
 
 
 class FavoritesPeople(db.Model):
+    __tablename__ = 'favoritespeople'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     people_id = db.Column(db.Integer, db.ForeignKey('people.id'), primary_key=True)

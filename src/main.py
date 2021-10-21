@@ -9,7 +9,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, Planets, People
+from models import db, User, Planets, People, FavoritesPeople
 #from models import Person
 
 app = Flask(__name__)
@@ -143,6 +143,30 @@ def post_people():
     all_peoples = list(map(lambda x: x.serialize(), all_people))
 
     return jsonify(all_peoples), 200
+
+# favorites people/personajes
+@app.route('/user/people', methods=['GET'])
+def get_favorites_user_people():
+    all_favorite = FavoritesPeople.query.all()
+    all_favorites = list(map(lambda x: x.serialize(), all_favorite))
+    
+    return jsonify((all_favorites)), 200
+
+@app.route('/user/people', methods=['POST'])
+def post_favorites_user_people():
+    # obtengo lo que me mandan por json y lo agrego a la base de datos
+    request_body = request.json
+    favoritesPeople = FavoritesPeople(user_id=request_body['user_id'], people_id=request_body['people_id'])
+    db.session.add(favoritesPeople)   
+    db.session.commit()
+
+    # retorno una lista en json con los datos actualizados
+
+    all_fav_people = People.query.all()
+    all_fav_peoples = list(map(lambda x: x.serialize(), all_fav_people))
+
+    return jsonify(all_fav_peoples), 200
+
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
