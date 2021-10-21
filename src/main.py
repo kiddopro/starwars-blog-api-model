@@ -104,13 +104,18 @@ def get_people():
 
 @app.route('/people', methods=['POST'])
 def post_people():
-    request_body = request.data
-    decoded_request = json.loads(request_body)
-    people.append(decoded_request)
-    response_body = {
-        "msg": "People added successfully"
-    }
-    return jsonify(response_body), 200
+    # obtengo lo que me mandan por json y lo agrego a la base de datos
+    request_body = request.json
+    people = People(name=request_body['name'], picture_url=request_body['picture_url'])
+    db.session.add(people)   
+    db.session.commit()
+
+    # retorno una lista en json con los datos actualizados
+
+    all_people = People.query.all()
+    all_peoples = list(map(lambda x: x.serialize(), all_people))
+
+    return jsonify(all_peoples), 200
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

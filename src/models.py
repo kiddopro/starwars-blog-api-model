@@ -37,6 +37,9 @@ class Planets(db.Model):
     name = db.Column(db.String(150), unique=True)
     picture_url = db.Column(db.String(250))
 
+    def __repr__(self):
+        return '<Planets %r>' % self.name
+
     def serialize(self):
         return {
             "id": self.id,
@@ -49,9 +52,30 @@ class People(db.Model):
     name = db.Column(db.String(150), unique=True)
     picture_url = db.Column(db.String(250))
 
+    def __repr__(self):
+        return '<People %r>' % self.name
+
     def serialize(self):
         return {
             "id": self.id,
             "name": self.name,
             "picture_url": self.picture_url
+        }
+
+
+class FavoritesPeople(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    people_id = db.Column(db.Integer, db.ForeignKey('people.id'), primary_key=True)
+    user = db.relationship(User)
+    people = db.relationship(People)
+
+    def __repr__(self):
+        return '<FavoritesPeople %r>' % self.id
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "people_id": self.people_id
         }
