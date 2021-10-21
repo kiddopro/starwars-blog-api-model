@@ -156,13 +156,22 @@ def get_favorites_user_people():
 def post_favorites_user_people():
     # obtengo lo que me mandan por json y lo agrego a la base de datos
     request_body = request.json
-    favoritesPeople = FavoritesPeople(user_id=request_body['user_id'], people_id=request_body['people_id'])
-    db.session.add(favoritesPeople)   
-    db.session.commit()
+    user = User.query.get(request_body['user_id'])
+    people = People.query.get(request_body['people_id'])
+    if user is None:
+        raise APIException('User not found', status_code=404)
+    elif people is None:
+        raise APIException('People not found', status_code=404)
+    else:
+        favoritesPeople = FavoritesPeople(user_id=request_body['user_id'], people_id=request_body['people_id'])
+        db.session.add(favoritesPeople)   
+        db.session.commit()
+        
+    
 
     # retorno una lista en json con los datos actualizados
 
-    all_fav_people = People.query.all()
+    all_fav_people = FavoritesPeople.query.all()
     all_fav_peoples = list(map(lambda x: x.serialize(), all_fav_people))
 
     return jsonify(all_fav_peoples), 200
