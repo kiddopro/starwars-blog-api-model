@@ -83,6 +83,19 @@ def get_planets():
     all_planets = list(map(lambda x: x.serialize(), all_planet))
     return jsonify(all_planets), 200
 
+@app.route('/planets/<int:planet_id>')
+def get_planet_id(planet_id):
+    # agarramos la respuesta del json y se la asignamos a body
+    body = request.json
+    # hacemos una busqueda a User por la id que se le pasa por parametro
+    planet = Planets.query.get(planet_id)
+
+    # corroboramos que se obtuvo respuesta, de lo contrario no existe un usuario con esa id
+    if planet is None:
+        raise APIException('Planet not found', status_code=404)
+    else:
+        return jsonify(planet.serialize()), 200
+
 @app.route('/planets', methods=['POST'])
 def post_planets():
     # obtengo lo que me mandan por json y lo agrego a la base de datos
