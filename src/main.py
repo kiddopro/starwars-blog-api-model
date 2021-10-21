@@ -165,6 +165,23 @@ def post_people():
 
     return jsonify(all_peoples), 200
 
+@app.route('/people/<int:id_people>', methods=['DELETE'])
+def delete_people(id_people):
+
+    people = People.query.get(id_people)
+
+    if people is None:
+        raise APIException('People not found', status_code=404)
+    else:
+        db.session.delete(people)
+        db.session.commit()
+
+
+    all_people = People.query.all()
+    all_peoples = list(map(lambda x: x.serialize(), all_people))
+
+    return jsonify(all_peoples), 200
+
 # favorites people/personajes
 @app.route('/user/people', methods=['GET'])
 def get_favorites_user_people():
