@@ -21,6 +21,15 @@ db.init_app(app)
 CORS(app)
 setup_admin(app)
 
+"""
+
+ACLARACIÓN:
+    No implementé endpoints para actualizar información debido a que cuando realizamos la parte de
+    front-end no era necesario actualizar la información que se mostraba en la pantalla.
+
+"""
+
+
 #variables
 
 
