@@ -131,6 +131,24 @@ def post_planets():
     all_planets = list(map(lambda x: x.serialize(), all_planet))
     return  jsonify(all_planets), 200
 
+
+@app.route('/planets/<int:id_planet', methods=['DELETE'])
+def delete_planet(id_planet):
+    planet = Planets.query.get(id_planet)
+
+    if planet is None:
+        raise APIException('Planet not found', status_code=404)
+    else:
+        db.session.delete(planet)
+        db.session.commit()
+
+
+    all_planet = Planets.query.all()
+    all_planets = list(map(lambda x: x.serialize(), all_planet))
+
+    return jsonify(all_planets), 200
+
+
 @app.route('/people', methods=['GET'])
 def get_people():
     all_people = People.query.all()
